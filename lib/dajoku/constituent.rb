@@ -1,7 +1,10 @@
+require 'forwardable'
+
 module Dajoku
   class Constituent
+    extend Forwardable
 
-    delegate :name, :space, :region, :application, to: :environment, allow_nil: true
+    def_delegators :@environment, :name, :space, :region, :application
 
     def initialize(key, value, environment)
       @key = key

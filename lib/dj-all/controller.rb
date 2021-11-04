@@ -17,7 +17,7 @@ module DjAll
     def show_vars(variable_name, force_fetch = false)
       environment_variables = @dajoku_coordinator.call force_fetch
       filtered = environment_variables.select{ |v| File.fnmatch(variable_name, v.key) }
-      by_tag = filtered.sort_by(&:tag).group_by(&:tag)
+      by_tag = filtered.sort_by(&:name).group_by(&:name)
       by_key = filtered.sort_by(&:key).group_by(&:key)
 
 
@@ -35,7 +35,7 @@ module DjAll
       end
 
       # names, envirnoment names, rows
-      puts output(by_key.keys, by_tag.keys.map{|t| t.split("_")[1]}, rows)
+      puts output(by_key.keys, by_tag.keys, rows)
 
     end
 
@@ -43,7 +43,7 @@ module DjAll
       OpenStruct.new(
         key => key,
         is_secret => variables.first.is_secret,
-        values => variables.map { |v| OpenStruct.new( v.tag => v.value )}
+        values => variables.map { |v| OpenStruct.new( v.name => v.value )}
       )
     end
 

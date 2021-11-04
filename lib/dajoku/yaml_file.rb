@@ -1,6 +1,7 @@
 require 'ostruct'
 require 'yaml'
-require_relative './environment_variable'
+require 'dajoku/variable'
+require 'settings/dj-all'
 
 module Dajoku
   class YamlFile
@@ -17,7 +18,9 @@ module Dajoku
       file_name = nil
       file_name = Dir.glob("#{YAML_DEFAULT_FOLDER}/#{yaml_key(env)}").sort.pop unless force_fetch
       if file_name.nil? || expired?(yaml_date(file_name), ttl)
-        command = "dajoku env export -s #{env.space} -e #{env.name} -a #{env.application} -r #{env.region} --i-know-what-i-am-doing-with-plain-text-secrets 2>&1"
+        password = Settings::DJALL.secret_password
+
+        command = "DAJOKU_SKIP_UPDATE=true dajoku env export -s #{env.space} -e #{env.name} -a #{env.application} -r #{env.region} #{password ? '--' : '' }#{password} 2>&1"
         stdout = `#{command}`
         if $?.exitstatus.zero?
           re = /filepath\:\s*(.*)$/
@@ -52,7 +55,7 @@ module Dajoku
         @yaml["configs"].map do |config|
           key = config["name"]
           value = config["value"]
-          Dajoku::EnvironmentVariable.new(key, value, false, variable_tag)
+          Dajoku::Variable.new(key, value, @environment)
         end
       end
 
@@ -60,13 +63,9 @@ module Dajoku
         @yaml["secrets"].map do |secret|
           key = secret["name"]
           # TODO: When TOPS allows the nonencrypted value, this will need to be changed
-          value = secret["encrypted_value"]
-          Dajoku::EnvironmentVariable.new(key, value, true, variable_tag)
+          value = secret["value"]
+          Dajoku::Variable.new(key, value, @environment)
         end
-      end
-
-      def variable_tag
-        "#{@environment.space}_#{@environment.name}_#{@environment.region}"
       end
 
       def yaml_deets(file_name)

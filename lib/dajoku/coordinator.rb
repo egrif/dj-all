@@ -1,7 +1,7 @@
 require 'ostruct'
 require 'yaml'
-require_relative './dajoku_environment'
-require_relative './yaml_file'
+require 'dajoku/environment'
+require 'dajoku/yaml_file'
 
 module Dajoku
   class Coordinator
@@ -18,7 +18,7 @@ module Dajoku
     def add_environment(space, name, region)
       @obsolete = true
       @envs ||= OpenStruct.new
-      env = Dajoku::DajokuEnvironment.new(@application, space, name, region)
+      env = Dajoku::Environment.new(@application, space, name, region)
       key = env_key(env)
       @envs[key] = env
       @yamls[key] = nil unless @yamls.nil?
