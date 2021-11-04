@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'lib')))
+$LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib')))
+puts $LOAD_PATH
+
+require 'juxtaconfig'
+require 'dajoku/dajoku_environment'
+require 'juxtaconfig/version'
+require 'optparse'
+
+def valid_application?(application)
+  !application.nil? && !application.empty?
+end
+
+def valid_environments?(environments)
+  !environments.any?{|e| e.count != 3}
+end
+
+parser = OptionParser.new do |opts|
+  opts.banner = "Usage: juxtaconfig -a DAJOKU_APPLICATION_NAME -e 'SPACE,NAME,REGION|SPACE,NAME,REGION|...'"
+  opts.separator ""
+
+  opts.on('-a', '--application APPLICATION', "(REQUIRED) Dajoku application name")
+
+  opts.on('-e', '--environments ENVIRONMENTS', "(REQUIRED) '|'-separated 'SPACE,NAME,REGION' coordinates of dajoku environments to compare") do |envs_string|
+    envs_string.split("|").map{|env| env.split(",")}
+  end
+
+  opts.on('-d','--debug','debug on')
+
+  opts.on('-v','--version','show version') do |v|
+    puts
+    puts "Juxtaconfig v#{Juxtaconfig::VERSION}"
+    puts
+  end
+end
+
+params = {}
+parser.parse!(into:params)
+
+puts params if params[:debug]
+
+unless params[:application] && params[:environments]
+  puts parser
+  exit
+end
+
+raise OptionParser::InvalidArgument.new("You must specify a valid dajoku application") unless valid_application?(params[:application])
+raise OptionParser::InvalidArgument.new("Procedure requires at least 2 Environments in the form 'SPACE,NAME,REGION|SPACE,NAME,REGION|...'") unless valid_environments?(params[:environments])
+
+environments = params[:environments].map do |e|
+  Dajoku::DajokuEnvironment.new(params[:application], *e)
+end
+
+Juxtaconfig::Main.new(environments).execute
