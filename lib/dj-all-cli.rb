@@ -25,22 +25,25 @@ parser = OptionParser.new do |opts|
   end
 
   opts.on('-g', '--group GROUP_NAME', '(OPTIONAL) environment group name') do |group|
-    raise "Default groups not found for application [#{params.application}]" if Settings::DjAll::GROUPS[params.application].nil?
-    raise "Default group [#{group}] not found for application [#{params.application}]" if Settings::DjAll::GROUPS[params.application][group].nil?
-    params.environments = Settings::DjAll::GROUPS[params.application][group].split("|").map{|env| env.split(",")}
+    raise "Default groups not found for application [#{params.application}]" if Settings::DJALL.groups[params.application].nil?
+    raise "Default group [#{group}] not found for application [#{params.application}]" if Settings::DJALL.groups[params.application][group].nil?
+    params.environments = Settings::DJALL.groups[params.application][group].split("|").map{|env| env.split(",")}
   end
 
   opts.on('-e', '--environments ENVIRONMENTS', "(REQUIRED) '|'-separated 'SPACE,NAME,REGION' coordinates of dajoku environments to compare") do |envs_string|
-    params.environments = envs_string.split("|").map{|env| env.split(",")} if params.environments.nil?
-    puts "-e (environments) ignored in favor of -d (defaults)"
+    if params.environments.nil?
+      params.environments = envs_string.split("|").map{|env| env.split(",")} if params.environments.nil?
+    else
+      puts "-e (environments) ignored in favor of -d (defaults)"
+    end
   end
 
   opts.on('-v', '--variable VARIABLE_NAME ', "(REQUIRED) name of environment variable to show, wildcards allowed") do |var|
-    params.variable_name = var
+    params.variable_name = var.split(',')
   end
 
   opts.on('-f', '--force-fetch', "(Optional) Ignore the yaml ttl and fetch all environments") do |var|
-    params.force_fetch = var
+    params.force_fetch = true
   end
 
   opts.on('--debug','debug on') do |bool|
@@ -67,4 +70,3 @@ raise OptionParser::InvalidArgument.new("Procedure requires at least 2 Environme
 raise OptionParser::InvalidArgument.new("Procedure requires a variable name") if params[:variable_name].nil?
 
 DjAll::Controller.new_from_params(params[:application], params[:environments]).show_vars(params[:variable_name], params.force_fetch)
-

@@ -1,7 +1,7 @@
 require 'ostruct'
 require 'yaml'
 require 'dajoku/environment'
-require 'dajoku/yaml_file'
+require 'dajoku/yaml_fetcher'
 
 module Dajoku
   class Coordinator
@@ -43,7 +43,7 @@ module Dajoku
 
       def fetch_yamls
         @envs.each_pair do |key, environment|
-          yaml = Dajoku::YamlFile.new(environment).fetch_yaml(force_fetch: @force_fetch)
+          yaml = Dajoku::YamlFetcher.new(environment).fetch_yaml(force_fetch: @force_fetch)
           @yamls[key] = yaml
         end
       end

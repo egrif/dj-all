@@ -14,10 +14,12 @@ module DjAll
       new(coordinator)
     end
 
-    def show_vars(variable_name, force_fetch = false)
+    def show_vars(variable_names, force_fetch = false)
       environment_variables = @dajoku_coordinator.call force_fetch
-      filtered = environment_variables.select{ |v| File.fnmatch(variable_name, v.key) }
-      by_tag = filtered.sort_by(&:name).group_by(&:name)
+      filtered = environment_variables.select do |v|
+        variable_names.any? {|vn| File.fnmatch(vn, v.key)}
+      end
+      by_tag = filtered.sort_by(&:environment_name).group_by(&:environment_name)
       by_key = filtered.sort_by(&:key).group_by(&:key)
 
 

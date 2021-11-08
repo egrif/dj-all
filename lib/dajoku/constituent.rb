@@ -1,17 +1,22 @@
 require 'forwardable'
+require 'ostruct'
 
 module Dajoku
   class Constituent
     extend Forwardable
 
-    def_delegators :@environment, :name, :space, :region, :application
+    def_delegators :@environment, :space, :region, :application
 
-    def initialize(key, value, environment)
+    def initialize(key, value_hash, environment)
       @key = key
-      @value = value
+      @value_hash = OpenStruct.new(value_hash)
       @environment = environment
     end
 
-    attr_reader :key, :value, :environment
+    def environment_name
+      @environment.name
+    end
+
+    attr_reader :key, :value_hash, :environment
   end
 end

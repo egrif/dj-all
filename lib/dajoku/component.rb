@@ -1,13 +1,10 @@
+require 'forwardable'
+
 module Dajoku
   class Component
+    extend Forwardable
 
-    delegate :count, :min_count, :max_count, :cpus, :limit_cpus, :memory, :limit_memory, :autoscaling, :worker_type_preferred, :worker_type_required,
-      to: :value, allow_nil: true
-
-    def initialize(key, value, environment)
-      value = OpenStruct.new(value)
-      super
-    end
+    def_delegators :@value_hash, :count, :min_count, :max_count, :cpus, :limit_cpus, :memory, :limit_memory, :autoscaling, :worker_type_preferred, :worker_type_required
 
   end
 end
