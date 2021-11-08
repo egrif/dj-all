@@ -1,11 +1,10 @@
+require 'forwardable'
+
 module Dajoku
   class Domain
+    extend Forwardable
 
-    delegate :visibility, :public, to: :value, allow_nil: true
-
-    def initialize(key, value, environment)
-      value = OpenStruct.new(value)
-    end
+    def_delegators :@value_hash, :visibility, :public
 
   end
 end
