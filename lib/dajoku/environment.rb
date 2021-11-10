@@ -22,8 +22,12 @@ module Dajoku
     end
 
     def yaml(force_fetch = false)
-      @raw_yaml = nil if force_fetch
       @raw_yaml ||= get_yaml(force_fetch)
+    end
+
+    def refresh
+      @raw_yaml = nil
+      yaml(true)
     end
 
     def secrets

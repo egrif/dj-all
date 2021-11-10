@@ -18,7 +18,6 @@ module DjAll
       environment_variables = @dajoku_coordinator.call force_fetch
       filtered = environment_variables.select do |v|
         variable_names.any? do |vn|
-          puts vn, v.key, v.value, v.to_s
           File.fnmatch(vn, v.key) if v.key
         end
       end
