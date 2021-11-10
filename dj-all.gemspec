@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.authors   = ['Greenhouse Software']
   s.email     = ['runfast@greenhouse.io']
 
-  s.metadata['allowed_push_host'] = 'https://rubygems.pkg.github.com/grnhse'
+  s.metadata['allowed_push_host'] = 'https://rubygems.pkg.github.com/egrif'
 
   s.homepage  = 'https://github.com/grnhse/dj-all'
   s.license   = 'MIT'
