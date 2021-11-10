@@ -17,7 +17,10 @@ module DjAll
     def show_vars(variable_names, force_fetch = false)
       environment_variables = @dajoku_coordinator.call force_fetch
       filtered = environment_variables.select do |v|
-        variable_names.any? {|vn| File.fnmatch(vn, v.key)}
+        variable_names.any? do |vn|
+          puts vn, v.key, v.value, v.to_s
+          File.fnmatch(vn, v.key) if v.key
+        end
       end
       by_tag = filtered.sort_by(&:environment_name).group_by(&:environment_name)
       by_key = filtered.sort_by(&:key).group_by(&:key)

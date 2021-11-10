@@ -11,23 +11,18 @@ module Dajoku
 
     def initialize(application)
       @application = application
-      @obsolete = true
       @yamls = OpenStruct.new
     end
 
     def add_environment(space, name, region)
-      @obsolete = true
       @envs ||= OpenStruct.new
       env = Dajoku::Environment.new(@application, space, name, region)
-      key = env_key(env)
+      key = generated_key(env)
       @envs[key] = env
-      @yamls[key] = nil unless @yamls.nil?
     end
 
     def call(force_fetch = false)
-      @force_fetch = force_fetch
-      fetch_yamls
-      @obsolete = false
+      @force_fetch  = force_fetch
       merged_variables
     end
 
@@ -37,22 +32,21 @@ module Dajoku
 
     private
 
-      def env_key(env)
+      def generated_key(env)
         [env.application, env.name, env.space, env.region].join("-")
       end
 
-      def fetch_yamls
+      def fetch_yamls(force_fetch = false)
         @envs.each_pair do |key, environment|
-          yaml = Dajoku::YamlFetcher.new(environment).fetch_yaml(force_fetch: @force_fetch)
+          yaml = environment.yaml(force_fetch)
           @yamls[key] = yaml
         end
       end
 
       def merged_variables
-        if @obsolete
-          fetch_yamls
+        @envs.to_h.values.reduce([]) do |aggregate, env|
+          aggregate + env.secrets + env.configs
         end
-        @yamls.to_h.values.reduce([]) { |aggregate,yaml| aggregate + yaml.variables }
       end
 
       def merged_and_grouped_variables
