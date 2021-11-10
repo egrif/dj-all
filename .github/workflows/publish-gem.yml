@@ -14,5 +14,5 @@ jobs:
         uses: jstastny/publish-gem-to-github@v1.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          owner: grnhse
+          owner: egrif
 
