@@ -5,7 +5,7 @@ module Dajoku
   class Constituent
     extend Forwardable
 
-    def_delegators :@environment, :space, :region, :application
+    def_delegators :@environment, :space, :application, :region
 
     def initialize(key, value_hash, environment)
       @key = key

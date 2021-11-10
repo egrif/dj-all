@@ -11,43 +11,48 @@ module Dajoku
       @space = space
       @name = name
       @region = region
+      @constituents = {}
     end
 
     attr_reader :application, :space, :name, :region
 
-    def populate_details
-      @yaml_fetcher = Dajoku::YamlFetcher.call(self)
-      @raw_yaml = yaml.yaml
+    def get_yaml(force_fetch = false)
+      @yaml_fetcher = Dajoku::YamlFetcher.call(self, force_fetch: force_fetch)
+      @yaml_fetcher.yaml
+    end
+
+    def yaml(force_fetch = false)
+      @raw_yaml = nil if force_fetch
+      @raw_yaml ||= get_yaml(force_fetch)
     end
 
     def secrets
-      @raw_yaml['secrets'].map do |entry|
-        Dajoku::Variable.new(entry['key'], entry['value'], self)
+      yaml['secrets'].map do |entry|
+        Dajoku::Variable.new(entry['name'], entry, self)
       end
     end
 
-
     def configs
-      @raw_yaml["configs"].map do |entry|
-        Dajoku::Variable.new(entry['key'], entry['value'], self)
+      yaml["configs"].map do |entry|
+        Dajoku::Variable.new(entry['name'], entry, self)
       end
     end
 
     def annotations
-      @raw_yaml["annotations"].map do |entry|
-        Dajoku::Annotation.new(entry['key'], entry['value'], self)
+      yaml["annotations"].map do |entry|
+        Dajoku::Annotation.new(entry['key'], entry['value'])
       end
     end
 
     def components
-      @raw_yaml["component_settings"].map do |entry|
-        Dajoku::Component.new(entry['key'], entry['value'], self)
+      yaml["component_settings"].map do |entry|
+        Dajoku::Component.new(entry['key'], entry['value'])
       end
     end
 
     def domains
-      @raw_yaml["domains"].map do |entry|
-        Dajoku::Domain.new(entry['key'], entry['value'], self)
+      yaml["domains"].map do |entry|
+        Dajoku::Domain.new(entry['key'], entry['value'])
       end
     end
   end
