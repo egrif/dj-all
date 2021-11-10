@@ -57,7 +57,7 @@ module DjAll
 
       # column widths are the max width for each column (monospaced type)
       max_widths = first_row.map.with_index do |head, i|
-        values.reduce(0) { |max, row| (row[i].nil? || max > row[i].length) ? max : row[i].length }
+        ([first_row] + values).reduce(0) { |max, row| (row[i].nil? || max > row[i].length) ? max : row[i].length }
       end
 
       out_string_array = [out_format(first_row, max_widths, 2)]
