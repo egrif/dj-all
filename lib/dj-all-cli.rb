@@ -16,9 +16,9 @@ def valid_environments?(environments)
 end
 
 def environments_parser(env_string, options)
-  envs = env_string.split("|")
+  envs = env_string.split(Settings::DJALL.cli.delimiters.envs)
   envs.map do |env|
-    deets = env.split(",")
+    deets = env.split(Settings::DJALL.cli.delimiters.env_deets)
     case deets.count
     when 0
       raise OptionParser::InvalidArgument.new("Invalid Environment [#{env}] in environments string [#{env_string}]: No parts defined")
@@ -46,9 +46,11 @@ def environments_parser(env_string, options)
   end
 end
 
+env_delim = Settings::DJALL.cli.delimiters.envs
+deets_delim = Settings::DJALL.cli.delimiters.env_deets
 params = OpenStruct.new
 parser = OptionParser.new do |opts|
-  opts.banner = "Usage: dj_all -a DAJOKU_APPLICATION_NAME -e 'SPACE,NAME,REGION|SPACE,NAME,REGION|...' -v VARIABLE_NAME"
+  opts.banner = "Usage: dj_all -a DAJOKU_APPLICATION_NAME -e SPACE#{deets_delim}NAME#{deets_delim}REGION#{env_delim}SPACE#{deets_delim}NAME#{deets_delim}REGION#{env_delim}... -v VARIABLE_NAME"
   opts.separator ""
 
   opts.on('-a', '--application APPLICATION', "(REQUIRED) Dajoku application name") do |app|
