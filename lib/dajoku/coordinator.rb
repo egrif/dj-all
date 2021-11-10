@@ -22,8 +22,7 @@ module Dajoku
     end
 
     def call(force_fetch = false)
-      @force_fetch  = force_fetch
-      merged_variables
+      merged_variables force_fetch
     end
 
     def environments
@@ -36,15 +35,9 @@ module Dajoku
         [env.application, env.name, env.space, env.region].join("-")
       end
 
-      def fetch_yamls(force_fetch = false)
-        @envs.each_pair do |key, environment|
-          yaml = environment.yaml(force_fetch)
-          @yamls[key] = yaml
-        end
-      end
-
-      def merged_variables
+      def merged_variables(force_fetch = false)
         @envs.to_h.values.reduce([]) do |aggregate, env|
+          env.refresh if force_fetch
           aggregate + env.secrets + env.configs
         end
       end
