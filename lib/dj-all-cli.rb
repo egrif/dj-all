@@ -15,6 +15,37 @@ def valid_environments?(environments)
   !environments.any?{|e| e.count != 3}
 end
 
+def environments_parser(env_string, options)
+  envs = env_string.split("|")
+  envs.map do |env|
+    deets = env.split(",")
+    case deets.count
+    when 0
+      raise OptionParser::InvalidArgument.new("Invalid Environment [#{env}] in environments string [#{env_string}]: No parts defined")
+    when 1
+      if options.space && options.region
+        deets.unshift(options.space) << options.region
+      else
+        raise OptionParser::InvalidArgument.new("Invalid Environment [#{env}] in environments string [#{env_string}]: Not enough parts defined")
+      end
+    when 2
+      if options.space && !options.region
+        deets.unshift(options.space)
+      elsif options.region && ! options.space
+        deets << options.region
+      else
+        raise OptionParser::InvalidArgument.new("Invalid Environment [#{env}] in environments string [#{env_string}]: ambiguous environment definition")
+      end
+    when 3
+      deets[0] = options.space if deets[0].strip.empty? && options.space
+      deets[2] = options.region if deets[2].strip.empty? && options.region
+    else
+      raise OptionParser::InvalidArgument.new("Invalid Environment [#{env}] in environments string [#{env_string}]: Too many parts")
+    end
+    deets
+  end
+end
+
 params = OpenStruct.new
 parser = OptionParser.new do |opts|
   opts.banner = "Usage: dj_all -a DAJOKU_APPLICATION_NAME -e 'SPACE,NAME,REGION|SPACE,NAME,REGION|...' -v VARIABLE_NAME"
@@ -24,21 +55,37 @@ parser = OptionParser.new do |opts|
     params.application = app
   end
 
-  opts.on('-g', '--group GROUP_NAME', '(OPTIONAL) environment group name') do |group|
+  opts.on('-g', '--group GROUP_NAME', '(Optional) environment group name') do |group|
     raise "Default groups not found for application [#{params.application}]" if Settings::DJALL.groups[params.application].nil?
     raise "Default group [#{group}] not found for application [#{params.application}]" if Settings::DJALL.groups[params.application][group].nil?
     params.environments = Settings::DJALL.groups[params.application][group].split("|").map{|env| env.split(",")}
   end
 
-  opts.on('-e', '--environments ENVIRONMENTS', "(REQUIRED) '|'-separated 'SPACE,NAME,REGION' coordinates of dajoku environments to compare") do |envs_string|
+  opts.on('-s', '--space DEFAULT_SPACE', "(Optional) Default space for any environment with undefined SPACE (ignored if -g specified)") do |space|
     if params.environments.nil?
-      params.environments = envs_string.split("|").map{|env| env.split(",")} if params.environments.nil?
+      params.space = space
     else
-      puts "-e (environments) ignored in favor of -d (defaults)"
+      puts "-s (DEFAULT_SPACE) ignored in favor of -g (group)"
     end
   end
 
-  opts.on('-v', '--variable VARIABLE_NAME ', "(REQUIRED) name of environment variable to show, wildcards allowed") do |var|
+  opts.on('-r', '--region DEFAULT_REGION', "(Optional) Default region for any environment with undefined REGION (ignored if -g specified)") do |region|
+    if params.environments.nil?
+      params.region = region
+    else
+      puts "-r (DEFAULT_REGION) ignored in favor of -g (group)"
+    end
+  end
+
+  opts.on('-e', '--environments ENVIRONMENTS', "(Optional) '|'-separated 'SPACE,NAME,REGION' coordinates of dajoku environments to compare") do |envs_string|
+    if params.environments.nil?
+      params.environments = environments_parser(envs_string, params)
+    else
+      puts "-e (environments) ignored in favor of -g (group)"
+    end
+  end
+
+  opts.on('-v', '--variable VARIABLE_NAME ', "(REQUIRED) comma-separated list of names of environment variables to show, wildcards allowed") do |var|
     params.variable_name = var.split(',')
   end
 
