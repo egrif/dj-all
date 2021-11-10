@@ -14,7 +14,7 @@ module DjAll
       new(coordinator)
     end
 
-    def show_vars(variable_names, force_fetch = false)
+    def show_vars(variable_names, force_fetch = false, spreadsheet_col_delim = false)
       environment_variables = @dajoku_coordinator.call force_fetch
       filtered = environment_variables.select do |v|
         variable_names.any? do |vn|
@@ -39,7 +39,8 @@ module DjAll
       end
 
       # names, envirnoment names, rows
-      puts output(by_key.keys, by_tag.keys, rows)
+      puts output(by_key.keys, by_tag.keys, rows) unless spreadsheet_col_delim
+      puts spreadsheet_output(by_key.keys, by_tag.keys, rows, spreadsheet_col_delim) if spreadsheet_col_delim
 
     end
 
@@ -52,7 +53,7 @@ module DjAll
     end
 
     def output(row_heads, col_heads, values)
-      first_row = [''] + col_heads
+      first_row = ['Var Name'] + col_heads
 
       # column widths are the max width for each column (monospaced type)
       max_widths = first_row.map.with_index do |head, i|
@@ -72,6 +73,12 @@ module DjAll
         val + " " * spaces_needed
       end
       out_row.join(" " * sep_width)
+    end
+
+    def spreadsheet_output(row_heads, col_heads, values, col_delim)
+      first_row = ['Var Name'] + col_heads
+
+      ([first_row] + values).map {|r| r.join(col_delim)}.join("\n")
     end
 
   end

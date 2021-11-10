@@ -95,6 +95,11 @@ parser = OptionParser.new do |opts|
     params.force_fetch = true
   end
 
+  opts.on('-s', '--spreadsheet-formatting', '(Optional) format for easy spreadsheet parsing (same constant between every colum).  Pass a delimiter string or 3 spaces will be defaulted') do |ss|
+    params.spreadsheet_formatting = (ss.respond_to?(:length) ? ss : "   ")
+  end
+
+
   opts.on('--debug','debug on') do |bool|
     params.debug = true
   end
@@ -118,4 +123,4 @@ raise OptionParser::InvalidArgument.new("You must specify a valid dajoku applica
 raise OptionParser::InvalidArgument.new("Procedure requires at least 2 Environments in the form 'SPACE,NAME,REGION|SPACE,NAME,REGION|...'") unless valid_environments?(params[:environments])
 raise OptionParser::InvalidArgument.new("Procedure requires a variable name") if params[:variable_name].nil?
 
-DjAll::Controller.new_from_params(params[:application], params[:environments]).show_vars(params[:variable_name], params.force_fetch)
+DjAll::Controller.new_from_params(params[:application], params[:environments]).show_vars(params[:variable_name], params.force_fetch, params.spreadsheet_formatting)
