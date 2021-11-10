@@ -106,7 +106,6 @@ parser = OptionParser.new do |opts|
 
   opts.on('--version','show version') do |v|
     puts
-    puts "DajokuEnvironmentTools v#{DajokuEnvironmentTools::VERSION}"
     puts "dj_all v#{DjAll::VERSION}"
     puts
   end
