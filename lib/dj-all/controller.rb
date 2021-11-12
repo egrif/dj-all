@@ -78,7 +78,7 @@ module DjAll
     end
 
     def spreadsheet_output(row_heads, col_heads, values, col_delim)
-      first_row = ['Var Name'] + col_heads
+      first_row = ['Name'] + col_heads
 
       ([first_row] + values).map {|r| r.join(col_delim)}.join("\n")
     end

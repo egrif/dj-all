@@ -23,7 +23,6 @@ def environments_parser(env_string, options)
     when 0
       raise OptionParser::InvalidArgument.new("Invalid Environment [#{env}] in environments string [#{env_string}]: No parts defined")
     when 1
-      puts options
       if options.space && options.region
         deets.unshift(options.space) << options.region
       else
@@ -129,6 +128,6 @@ raise OptionParser::InvalidArgument.new("Procedure requires a variable name") if
 DjAll::Controller.new_from_params(params[:application], params[:environments]).show_vars(
   params[:variable_name],
   force_fetch: params.force_fetch,
-  spreadsheet_formatiing: params.spreadsheet_formatting,
+  spreadsheet_formatting: params.spreadsheet_formatting,
   pivot: params.pivot
 )
