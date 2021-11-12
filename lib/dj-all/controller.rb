@@ -14,33 +14,35 @@ module DjAll
       new(coordinator)
     end
 
-    def show_vars(variable_names, force_fetch = false, spreadsheet_col_delim = false)
-      environment_variables = @dajoku_coordinator.call force_fetch
+    def show_vars(variable_names, options)
+      environment_variables = @dajoku_coordinator.call options[:force_fetch]
       filtered = environment_variables.select do |v|
         variable_names.any? do |vn|
           File.fnmatch(vn, v.key) if v.key
         end
       end
-      by_tag = filtered.sort_by(&:environment_name).group_by(&:environment_name)
-      by_key = filtered.sort_by(&:key).group_by(&:key)
+      group_rows_by = options[:pivot] ? :environment_name : :key
+      group_columns_by = options[:pivot] ? :key : :environment_name
+      columns = filtered.sort_by(&group_columns_by).group_by(&group_columns_by)
+      row_objects = filtered.sort_by(&group_rows_by).group_by(&group_rows_by)
 
 
       # hash of hashes
-      by_tag_key = {}
-      by_tag.each do |tag, vars|
-        by_tag_key[tag] = vars.collect(&:key).zip(vars).to_h
+      column_and_row = {}
+      columns.each do |header, vars|
+        column_and_row[header] = vars.collect(&group_rows_by).zip(vars).to_h
       end
 
       # Output rows as arrays with config var name prepended
-      rows = by_key.keys.map do |key|
-        [key] + by_tag.keys.map do |tag|
-          by_tag_key[tag][key]&.value
+      rows = row_objects.keys.map do |row_head|
+        [row_head] + columns.keys.map do |col_head|
+          column_and_row[col_head][row_head]&.value
         end
       end
 
       # names, envirnoment names, rows
-      puts output(by_key.keys, by_tag.keys, rows) unless spreadsheet_col_delim
-      puts spreadsheet_output(by_key.keys, by_tag.keys, rows, spreadsheet_col_delim) if spreadsheet_col_delim
+      puts output(row_objects.keys, columns.keys, rows) unless options[:spreadsheet_formatting]
+      puts spreadsheet_output(row_objects.keys, columns.keys, rows, options[:spreadsheet_formatting]) if options[:spreadsheet_formatting]
 
     end
 
