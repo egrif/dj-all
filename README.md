@@ -39,14 +39,16 @@ dj-all ...
 #### Usage
 ```
 Usage: dj_all -a DAJOKU_APPLICATION_NAME -e SPACE,NAME,REGION:SPACE,NAME,REGION:... -v VARIABLE_NAME
+
     -a, --application APPLICATION    (REQUIRED) Dajoku application name
     -g, --group GROUP_NAME           (Optional) environment group name
-        --space DEFAULT_SPACE        (Optional) Default space for any environment with undefined SPACE (ignored if -g specified)
+    -s, --space DEFAULT_SPACE        (Optional) Default space for any environment with undefined SPACE (ignored if -g specified)
     -r, --region DEFAULT_REGION      (Optional) Default region for any environment with undefined REGION (ignored if -g specified)
     -e, --environments ENVIRONMENTS  (Optional) '|'-separated 'SPACE,NAME,REGION' coordinates of dajoku environments to compare
     -v, --variable VARIABLE_NAME     (REQUIRED) comma-separated list of names of environment variables to show, wildcards allowed
     -f, --force-fetch                (Optional) Ignore the yaml ttl and fetch all environments
-    -s, --spreadsheet-formatting     (Optional) format for easy spreadsheet parsing (same constant between every colum).  Pass a delimiter string or 3 spaces will be defaulted
+    -t, --spreadsheet-formatting     (Optional) format for easy spreadsheet parsing (same constant between every colum).  Pass a delimiter string or 3 spaces will be defaulted
+    -p, --pivot                      (Optional) Put variable names across the top and environments down the side of the output table
         --debug                      debug on
         --version                    show version
 ```

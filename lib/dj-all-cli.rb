@@ -60,7 +60,7 @@ parser = OptionParser.new do |opts|
   opts.on('-g', '--group GROUP_NAME', '(Optional) environment group name') do |group|
     raise "Default groups not found for application [#{params.application}]" if Settings::DJALL.groups[params.application].nil?
     raise "Default group [#{group}] not found for application [#{params.application}]" if Settings::DJALL.groups[params.application][group].nil?
-    params.environments = Settings::DJALL.groups[params.application][group].split("|").map{|env| env.split(",")}
+    params.environments = Settings::DJALL.groups[params.application][group].split(env_delim).map{|env| env.split(deets_delim)}
   end
 
   opts.on('-s', '--space DEFAULT_SPACE', "(Optional) Default space for any environment with undefined SPACE (ignored if -g specified)") do |space|
@@ -122,7 +122,6 @@ unless params[:application] && params[:environments]
 end
 
 raise OptionParser::InvalidArgument.new("You must specify a valid dajoku application") unless valid_application?(params[:application])
-raise OptionParser::InvalidArgument.new("Procedure requires at least 2 Environments in the form 'SPACE,NAME,REGION|SPACE,NAME,REGION|...'") unless valid_environments?(params[:environments])
 raise OptionParser::InvalidArgument.new("Procedure requires a variable name") if params[:variable_name].nil?
 
 DjAll::Controller.new_from_params(params[:application], params[:environments]).show_vars(
