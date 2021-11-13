@@ -55,15 +55,21 @@ module DjAll
     end
 
     def output(row_heads, col_heads, values)
-      first_row = ['Var Name'] + col_heads
+      first_row = ['Name'] + col_heads
 
       # column widths are the max width for each column (monospaced type)
       max_widths = first_row.map.with_index do |head, i|
         ([first_row] + values).reduce(0) { |max, row| (row[i].nil? || max > row[i].length) ? max : row[i].length }
       end
 
-      out_string_array = [out_format(first_row, max_widths, 2)]
-      out_string_array += values.map{ |val_row| out_format(val_row, max_widths, 2)}
+      first_row = out_format(first_row, max_widths, 2)
+      out_string_array =  [Settings::DJALL.formatting.colors.first_row + first_row  + "\e[0m"]
+      stripe_count = 0
+      stripe_count = Settings::DJALL.formatting.colors.striping.length if Settings::DJALL.formatting.colors.striping.length
+      out_string_array += values.map.with_index do |val_row, i|
+        color = Settings::DJALL.formatting.colors.striping[i % stripe_count] if stripe_count > 0
+        color + out_format(val_row, max_widths, 2) + "\e[0m"
+      end
       return out_string_array.join("\n")
     end
 
