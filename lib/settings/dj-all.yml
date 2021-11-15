@@ -20,7 +20,7 @@ formatting:
   column_spacing: 2
   max_display_width: 180
   colors:
-    striping: []
+    striping: ["\e[96m","\e[94m"]
     # first_row:
     first_column: "\e[31m"
     # striping: ["\e[40m","\e[0m"]
