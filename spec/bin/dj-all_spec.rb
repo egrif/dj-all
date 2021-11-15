@@ -1,6 +1,6 @@
 require 'open3'
 
-RSpec.describe "dj-all cli" do
+RSpec.describe "dj-all executable" do
   context "when receiving bad params" do
 
     it "requires -a (--application) to be defined" do
