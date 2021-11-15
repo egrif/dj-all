@@ -20,9 +20,15 @@ formatting:
   column_spacing: 2
   max_display_width: 180
   colors:
-    striping: ["\e[40m","\e[0m"]
-    first_row: "\e[1m"
-    first_column: "\e[1m"
+    striping: []
+    # first_row:
+    first_column: "\e[31m"
+    # striping: ["\e[40m","\e[0m"]
+    first_row: "\e[4m"
+    # first_column: "\e[1m"
+
+# Handy dandy color chart:
+
 # def color(index)
 #   normal = "\e[#{index}m#{index}\e[0m"
 #   bold = "\e[#{index}m\e[1m#{index}\e[0m"

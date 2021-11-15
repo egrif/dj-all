@@ -62,25 +62,27 @@ module DjAll
         ([first_row] + values).reduce(0) { |max, row| (row[i].nil? || max > row[i].length) ? max : row[i].length }
       end
 
-      first_row = out_format(first_row, max_widths, 2)
-      out_string_array =  [Settings::DJALL.formatting.colors.first_row + first_row  + "\e[0m"]
-      stripe_count = 0
-      stripe_count = Settings::DJALL.formatting.colors.striping.length if Settings::DJALL.formatting.colors.striping.length
+      out_string_array = [out_format(first_row, max_widths, 2, Settings::DJALL.formatting.colors.first_row)]
+      stripe_count = Settings::DJALL.formatting.colors.striping.length ? Settings::DJALL.formatting.colors.striping.length : 0
       out_string_array += values.map.with_index do |val_row, i|
-        color = Settings::DJALL.formatting.colors.striping[i % stripe_count] if stripe_count > 0
-        color + out_format(val_row, max_widths, 2) + "\e[0m"
+        color = stripe_count == 0 ? nil : Settings::DJALL.formatting.colors.striping[i % stripe_count]
+        out_format(val_row, max_widths, 2, color, Settings::DJALL.formatting.colors.first_column)
       end
       return out_string_array.join("\n")
     end
 
-    def out_format(row, widths, sep_width)
+    def out_format(row, widths, sep_width, row_color = nil, first_column_color = nil)
+      row_color = '' if !row_color.is_a?(String)
+      row_reset = row_color == '' ? '' : "\e[0m"
+      first_column_color = '' if !first_column_color.is_a?(String)
       out_row = row.map.with_index do |val, i|
         val = '' if val.nil?
         # left justified
         spaces_needed = widths[i] > val.length ? widths[i]-val.length : 0
+        val = first_column_color + val + "\e[0m" if i == 0 && !first_column_color.empty?
         val + " " * spaces_needed
       end
-      out_row.join(" " * sep_width)
+      row_color + out_row.join(" " * sep_width) + row_reset
     end
 
     def spreadsheet_output(row_heads, col_heads, values, col_delim)
