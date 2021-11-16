@@ -98,8 +98,12 @@ class DjAllCli
         params.force_fetch = true
       end
 
-      opts.on('-t', '--spreadsheet-formatting', 'format for easy spreadsheet parsing (same constant between every colum).  Pass a delimiter string or 3 spaces will be defaulted') do |ss|
-        params.spreadsheet_formatting = (ss.respond_to?(:length) ? ss : "   ")
+      opts.on('-t', '--spreadsheet', 'format for easy spreadsheet parsing ("   " between every column).') do |ss|
+        params.spreadsheet_formatting = "   "
+      end
+
+      opts.on('-u', '--spreadsheet-sep SEPARATOR', 'format for easy spreadsheet parsing. Pass a delimiter string') do |ss|
+        params.spreadsheet_formatting = ss
       end
 
       opts.on('-p', '--pivot', 'Put variable names across the top and environments down the side of the output table') do |pivot|
