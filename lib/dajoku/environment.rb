@@ -31,15 +31,17 @@ module Dajoku
     end
 
     def secrets
-      yaml['secrets'].map do |entry|
+      rets = yaml['secrets'].map do |entry|
         Dajoku::Variable.new(entry['name'], entry, self)
       end
+      return rets || []
     end
 
     def configs
-      yaml["configs"].map do |entry|
+      figs = yaml["configs"].map do |entry|
         Dajoku::Variable.new(entry['name'], entry, self)
       end
+      return figs || []
     end
 
     def annotations
