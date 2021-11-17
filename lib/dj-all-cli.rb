@@ -111,7 +111,12 @@ class DjAllCli
       end
     end.parse!
 
-    puts params if params[:debug]
+    puts params if params.debug
+
+    unless params.application && params.environments
+      puts parser
+      exit
+    end
 
     # validation and processing
     if params.group && params.space
@@ -136,11 +141,6 @@ class DjAllCli
 
     abort "ERROR: You must specify a valid dajoku application" unless valid_application?(params[:application])
     abort "ERROR: Procedure requires a variable name" if params[:variable_name].nil?
-
-    unless params[:application] && params[:environments]
-      puts parser
-      exit
-    end
 
     DjAll::Controller.new_from_params(params[:application], params[:environments]).show_vars(
       params[:variable_name],
