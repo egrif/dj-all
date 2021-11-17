@@ -61,17 +61,11 @@ class DjAllCli
       end
 
       opts.on('-g', '--group GROUP_NAME', 'environment group name') do |group|
-        abort "ERROR: Default groups not found for application [#{params.application}]" if Settings::DJALL.groups[params.application].nil?
-        abort "ERROR: Default group [#{group}] not found for application [#{params.application}]" if Settings::DJALL.groups[params.application][group].nil?
-        params.environments = Settings::DJALL.groups[params.application][group].split(env_delim).map{|env| env.split(deets_delim)}
+        params.group = group
       end
 
       opts.on('-s', '--space DEFAULT_SPACE', "Default space for any environment with undefined SPACE (ignored if -g specified)") do |space|
-        if params.environments.nil?
-          params.space = space
-        else
-          puts "INFO: -s (DEFAULT_SPACE) potentially ignored in favor of -g (group)"
-        end
+        params.space = space
       end
 
       opts.on('-r', '--region DEFAULT_REGION', "Default region for any environment with undefined REGION (ignored if -g specified)") do |region|
@@ -83,11 +77,7 @@ class DjAllCli
       end
 
       opts.on('-e', '--environments ENVIRONMENTS', "'|'-separated 'SPACE,NAME,REGION' coordinates of dajoku environments to compare") do |envs_string|
-        if params.environments.nil?
-          params.environments = environments_parser(envs_string, params)
-        else
-          puts "INFO: -e (environments) ignored in favor of -g (group)"
-        end
+        params.environment_string = envs_string
       end
 
       opts.on('-v', '--variable VARIABLE_NAME ', "(REQUIRED) comma-separated list of names of environment variables to show, wildcards allowed") do |var|
@@ -98,8 +88,8 @@ class DjAllCli
         params.force_fetch = true
       end
 
-      opts.on('-t', '--spreadsheet', 'format for easy spreadsheet parsing ("   " between every column).') do |ss|
-        params.spreadsheet_formatting = "   "
+      opts.on('-t', '--spreadsheet', "format for easy spreadsheet parsing (\"#{Settings::DJALL.formatting.default_spreadsheet_delimiter}\" between every column).") do |ss|
+        params.spreadsheet_formatting = Settings::DJALL.formatting.default_spreadsheet_delimiter
       end
 
       opts.on('-u', '--spreadsheet-sep SEPARATOR', 'format for easy spreadsheet parsing. Pass a delimiter string') do |ss|
@@ -122,6 +112,27 @@ class DjAllCli
     end.parse!
 
     puts params if params[:debug]
+
+    # validation and processing
+    if params.group && params.space
+      puts "INFO: -s (DEFAULT_SPACE) potentially ignored in favor of -g (group)"
+    end
+
+    if params.group && params.region
+      puts "INFO: -r (DEFAULT_REGION) potentially ignored in favor of -g (group)"
+    end
+
+    if params.environment_string && params.group
+      puts "INFO: -e (environments) ignored in favor of -g (group)"
+    end
+
+    if params.group
+      abort "ERROR: Default groups not found for application [#{params.application}]" if params.application.nil? || Settings::DJALL.groups[params.application].nil?
+      abort "ERROR: Default group [#{params.group}] not found for application [#{params.application}]" if Settings::DJALL.groups[params.application][params.group].nil?
+      params.environments = environments_parser(Settings::DJALL.groups[params.application][params.group], params)
+    else
+      params.environments = environments_parser(params.environment_string, params)
+    end
 
     abort "ERROR: You must specify a valid dajoku application" unless valid_application?(params[:application])
     abort "ERROR: Procedure requires a variable name" if params[:variable_name].nil?

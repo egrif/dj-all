@@ -17,6 +17,7 @@ groups:
     non_prod: prod,staging,use1:prod,staging-canary,use1:prod,staging-s2,use1:prod,sandbox,use1
     non_prod_base: prod,staging,use1:prod,staging-canary,use1:prod,staging-s2,use1:prod,sandbox,use1
 formatting:
+  default_spreadsheet_deleimiter: ".."
   column_spacing: 2
   max_display_width: 180
   colors:
