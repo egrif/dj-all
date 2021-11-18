@@ -77,7 +77,7 @@ class DjAllCli
         end
       end
 
-      opts.on('-e', '--environments ENVIRONMENTS', "'|'-separated 'SPACE,NAME,REGION' coordinates of dajoku environments to compare") do |envs_string|
+      opts.on('-e', '--environments ENVIRONMENTS', "'#{env_delim}'-separated 'SPACE#{deets_delim}NAME#{deets_delim}REGION' coordinates of dajoku environments to compare") do |envs_string|
         params.environment_string = envs_string
       end
 
