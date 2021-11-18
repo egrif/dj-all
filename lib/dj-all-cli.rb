@@ -7,6 +7,7 @@ require 'dj-all/version'
 require 'optparse'
 require 'ostruct'
 
+#TODO: Refactor this for reusablility (dajoku tools) and readability
 class DjAllCli
 
   def self.valid_application?(application)
@@ -92,7 +93,7 @@ class DjAllCli
         params.spreadsheet_formatting = Settings::DJALL.formatting.default_spreadsheet_delimiter
       end
 
-      opts.on('-u', '--spreadsheet-sep SEPARATOR', 'format for easy spreadsheet parsing. Pass a delimiter string') do |ss|
+      opts.on('-u', '--spreadsheet-delimiter Dilimiter', 'format for easy spreadsheet parsing. Pass a column-delimiter string') do |ss|
         params.spreadsheet_formatting = ss
       end
 
@@ -109,7 +110,9 @@ class DjAllCli
         puts "dj_all v#{DjAll::VERSION}"
         puts
       end
-    end.parse!
+    end
+
+    parser.parse!
 
     puts params if params.debug
 
