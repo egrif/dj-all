@@ -1,2 +1,2 @@
 #!/usr/bin/env ruby
-require './lib/dj-all-cli'
+require 'dj-all-cli'

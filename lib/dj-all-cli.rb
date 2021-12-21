@@ -116,11 +116,6 @@ class DjAllCli
 
     puts params if params.debug
 
-    unless params.application && params.environments
-      puts parser
-      exit
-    end
-
     # validation and processing
     if params.group && params.space
       puts "INFO: -s (DEFAULT_SPACE) potentially ignored in favor of -g (group)"
@@ -140,6 +135,11 @@ class DjAllCli
       params.environments = environments_parser(Settings::DJALL.groups[params.application][params.group], params)
     else
       params.environments = environments_parser(params.environment_string, params)
+    end
+
+    unless params.application && params.environments
+      puts parser
+      exit
     end
 
     abort "ERROR: You must specify a valid dajoku application" unless valid_application?(params[:application])

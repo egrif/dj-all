@@ -7,10 +7,10 @@ yaml:
   default_folder: "/tmp"
 groups:
   greenhouse:
-    all: prod,canary,use1:prod,prod,use1:prod,prod-s2,use1:prod,prod-s3,use1:prod,prod-s4,use1:prod,prod-s5,use1:prod,prod-s101,euc1
-    us: prod,canary,use1:prod,prod,use1:prod,prod-s2,use1:prod,prod-s3,use1:prod,prod-s4,use1:prod,prod-s5,use1
-    us_base: prod,canary,use1:prod,prod,use1:prod,prod-s2,use1:prod,prod-s3,use1:prod,prod-s4,use1:prod,prod-s5,use1:prod,prod-base,use1
-    legacy: prod,canary,use1:prod,prod,use1:prod,prod-s2,use1
+    all: prod,prod,use1:prod,prod-s2,use1:prod,prod-s3,use1:prod,prod-s4,use1:prod,prod-s5,use1:prod,prod-s101,euc1
+    us: prod,prod,use1:prod,prod-s2,use1:prod,prod-s3,use1:prod,prod-s4,use1:prod,prod-s5,use1
+    us_base: prod,prod,use1:prod,prod-s2,use1:prod,prod-s3,use1:prod,prod-s4,use1:prod,prod-s5,use1:prod,prod-base,use1
+    legacy: prod,prod,use1:prod,prod-s2,use1
     leaders: prod,prod,use1:prod,prod-s101,euc1
     staging: prod,staging,use1:prod,staging-canary,use1:prod,staging-s2,use1
     staging_base: prod,staging,use1:prod,staging-canary,use1:prod,staging-s2,use1:prod,staging-base,use1
