@@ -114,7 +114,10 @@ class DjAllCli
 
     parser.parse!
 
-    puts params if params.debug
+    if params.debug
+      puts params
+      puts ''
+    end
 
     # validation and processing
     if params.group && params.space
@@ -133,7 +136,7 @@ class DjAllCli
       abort "ERROR: Default groups not found for application [#{params.application}]" if params.application.nil? || Settings::DJALL.groups[params.application].nil?
       abort "ERROR: Default group [#{params.group}] not found for application [#{params.application}]" if Settings::DJALL.groups[params.application][params.group].nil?
       params.environments = environments_parser(Settings::DJALL.groups[params.application][params.group], params)
-    else
+    elsif params.environment_string
       params.environments = environments_parser(params.environment_string, params)
     end
 
