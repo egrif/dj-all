@@ -101,6 +101,10 @@ class DjAllCli
         params.pivot = pivot
       end
 
+      opts.on('-x', '--expose-secrets', 'Show secrets in output (only if DJ_ALL_SECRET_PASSWORD is set)') do |expose|
+        params.expose_secrets = expose
+      end
+
       opts.on('--debug','debug on') do |bool|
         params.debug = true
       end
@@ -152,7 +156,8 @@ class DjAllCli
       params[:variable_name],
       force_fetch: params.force_fetch,
       spreadsheet_formatting: params.spreadsheet_formatting,
-      pivot: params.pivot
+      pivot: params.pivot,
+      expose_secrets: params.expose_secrets
     )
   end
 

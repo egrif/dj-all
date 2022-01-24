@@ -36,7 +36,13 @@ module DjAll
       # Output rows as arrays with config var name prepended
       rows = row_objects.keys.map do |row_head|
         [row_head] + columns.keys.map do |col_head|
-          column_and_row[col_head][row_head]&.value
+          variable = column_and_row[col_head][row_head]
+          if options[:expose_secrets] || !variable.is_secret?
+            variable&.value
+          else
+            '**********'
+          end
+
         end
       end
 
