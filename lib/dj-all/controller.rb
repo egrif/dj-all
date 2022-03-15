@@ -37,7 +37,7 @@ module DjAll
       rows = row_objects.keys.map do |row_head|
         [row_head] + columns.keys.map do |col_head|
           variable = column_and_row[col_head][row_head]
-          if options[:expose_secrets] || !variable.is_secret?
+          if options[:expose_secrets] || !variable&.is_secret?
             variable&.value
           else
             '**********'
