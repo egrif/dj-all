@@ -123,7 +123,12 @@ class DjAllCli
       puts ''
     end
 
-    # validation and processing
+    # defaults
+    unless params.application
+      params.application = 'greenhouse'
+    end
+
+     # validation and processing
     if params.group && params.space
       puts "INFO: -s (DEFAULT_SPACE) potentially ignored in favor of -g (group)"
     end
@@ -142,10 +147,6 @@ class DjAllCli
       params.environments = environments_parser(Settings::DJALL.groups[params.application][params.group], params)
     elsif params.environment_string
       params.environments = environments_parser(params.environment_string, params)
-    end
-
-    unless params.application
-      params.application = 'greenhouse'
     end
 
     unless params.application && params.environments
