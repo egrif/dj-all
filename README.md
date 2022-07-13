@@ -3,7 +3,7 @@ Interrogatin' the dajokuspace
 
 ---
 ## About _dj-all_
-This is a collection of command-line executables to help with examining and comparing dajoku values in multiple-environment settings
+This is a collection of command-line executables (well, actually just one executable at the moment...) to help with examining and comparing dajoku values in multiple-environment settings
 ## Installation
 These command line tools can be installed by running
 ```
@@ -26,7 +26,7 @@ where
 ## Available Commands
 
 ### dj-all
-Download, merge, and compare multiple environemts and creat a best-guess environment dajoku configuration from the comparison oft he included environments
+Download, merge, and compare multiple environments from dajoku, any application
 
 In development, run from the command-line
 ```
@@ -40,7 +40,7 @@ dj-all ...
 ```
 Usage: dj_all -a DAJOKU_APPLICATION_NAME -e SPACE,NAME,REGION:SPACE,NAME,REGION:... -v VARIABLE_NAME
 
-    -a, --application APPLICATION    (REQUIRED) Dajoku application name
+    -a, --application APPLICATION    (REQUIRED, default: greenhouse) Dajoku application name
     -g, --group GROUP_NAME           (Optional) environment group name
     -s, --space DEFAULT_SPACE        (Optional) Default space for any environment with undefined SPACE (ignored if -g specified)
     -r, --region DEFAULT_REGION      (Optional) Default region for any environment with undefined REGION (ignored if -g specified)

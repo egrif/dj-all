@@ -144,6 +144,10 @@ class DjAllCli
       params.environments = environments_parser(params.environment_string, params)
     end
 
+    unless params.application
+      params.application = 'greenhouse'
+    end
+
     unless params.application && params.environments
       puts parser
       exit

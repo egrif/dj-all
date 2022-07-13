@@ -10,12 +10,15 @@ groups:
     all: prod,prod,use1:prod,prod-s2,use1:prod,prod-s3,use1:prod,prod-s4,use1:prod,prod-s5,use1:prod,prod-s101,euc1
     us: prod,prod,use1:prod,prod-s2,use1:prod,prod-s3,use1:prod,prod-s4,use1:prod,prod-s5,use1
     us_base: prod,prod,use1:prod,prod-s2,use1:prod,prod-s3,use1:prod,prod-s4,use1:prod,prod-s5,use1:prod,prod-base,use1
+    eu: prod,prod-s101,euc1
+    eu_all: prod,prod-s101,euc1:prod,staging-s101,euc1
     legacy: prod,prod,use1:prod,prod-s2,use1
     leaders: prod,prod,use1:prod,prod-s101,euc1
-    staging: prod,staging,use1:prod,staging-canary,use1:prod,staging-s2,use1
-    staging_base: prod,staging,use1:prod,staging-canary,use1:prod,staging-s2,use1:prod,staging-base,use1
-    non_prod: prod,staging,use1:prod,staging-canary,use1:prod,staging-s2,use1:prod,sandbox,use1
-    non_prod_base: prod,staging,use1:prod,staging-canary,use1:prod,staging-s2,use1:prod,sandbox,use1
+    staging_us: prod,staging,use1:prod,staging-s2,use1
+    staging_all: prod,staging,use1:prod,staging-s2,use1:prod,staging-s101,euc1
+    staging_us_base: prod,staging,use1:prod,staging-s2,use1:prod,staging-base,use1
+    non_prod_us: prod,staging,use1:prod,staging-s2,use1:prod,sandbox,use1
+    non_prod_us_base: prod,staging,use1:prod,staging-s2,use1:prod,sandbox,use1:prod,staging-base,use1
 formatting:
   default_spreadsheet_deleimiter: ".."
   column_spacing: 2
