@@ -1,3 +1,3 @@
 module DjAll
-  VERSION = '0.1.15a'
+  VERSION = '0.1.16'
 end
