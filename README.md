@@ -56,8 +56,14 @@ Like so:
 ```
 dj-all -a greenhouse -s prod -r use1 -e prod:prod-base:canary -v *SOLR*
 ```
+You can also now get a list of groups and their constituent environments by
+```
+dj_all groups -a APPLICATION_NAME
+```
+this will show you the currently active group definitions (which will be coming from the application defaults OR your overrides if any
+)
 #### Configuration
-A configuratiuon yaml file lives in `lib/settings/dj-all.yml`.  You can override any setting in there (or add to the available environemnt groups by application) by creating a yaml file at `~/.dj-all.yml` and overriding (or adding) the keys you need.
+A configuration yaml file lives in `lib/settings/dj-all.yml`.  You can override any setting in there (or add to the available environemnt groups by application) by creating a yaml file at `~/.dj-all.yml` and overriding (or adding) the keys you need.
 
 If you want your yaml file in a different location, that works too if you set and environment variable pointing to the location of your configuration
 `export DJALL_CONFIG_FILE=<full path to your config file>`.  WARNING: we don't do any error checking on the config file, so this is a great way to break things, if that is your inclination.

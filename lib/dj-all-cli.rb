@@ -54,7 +54,7 @@ class DjAllCli
     deets_delim = Settings::DJALL.cli.delimiters.env_deets
     params = OpenStruct.new
     parser = OptionParser.new do |opts|
-      opts.banner = "Usage: dj_all -a DAJOKU_APPLICATION_NAME -e SPACE#{deets_delim}NAME#{deets_delim}REGION#{env_delim}SPACE#{deets_delim}NAME#{deets_delim}REGION#{env_delim}... -v VARIABLE_NAME"
+      opts.banner = "Usage: dj_all -a DAJOKU_APPLICATION_NAME -e SPACE#{deets_delim}NAME#{deets_delim}REGION#{env_delim}SPACE#{deets_delim}NAME#{deets_delim}REGION#{env_delim}... -v VARIABLE_NAME [options]"
       opts.separator ""
 
       opts.on('-a', '--application APPLICATION', "(REQUIRED) Dajoku application name") do |app|
@@ -93,7 +93,7 @@ class DjAllCli
         params.spreadsheet_formatting = Settings::DJALL.formatting.default_spreadsheet_delimiter
       end
 
-      opts.on('-u', '--spreadsheet-delimiter Dilimiter', 'format for easy spreadsheet parsing. Pass a column-delimiter string') do |ss|
+      opts.on('-u', '--spreadsheet-delimiter Delimiter', 'format for easy spreadsheet parsing. Pass a column-delimiter string') do |ss|
         params.spreadsheet_formatting = ss
       end
 
@@ -116,7 +116,20 @@ class DjAllCli
       end
     end
 
-    parser.parse!
+    commands = parser.parse!
+
+    if commands.include?('groups') # show group definitions then exit
+      abort "ERROR: Default groups not found for application [#{params.application}]" if params.application.nil? || Settings::DJALL.groups[params.application].nil?
+      groups = Settings::DJALL.groups[params.application]
+      puts "Defined Groups:"
+      puts ""
+      max_length = groups.each_pair.map {|k,v| k }.reduce(0) {|max,name| name.length > max ? name.length : max }
+      groups.each_pair do |name,envs|
+        env_names = envs.split(Settings::DJALL.cli.delimiters.envs).map {|deet| deet.split(Settings::DJALL.cli.delimiters.env_deets)[1]}.sort.join(', ')
+        puts "#{" "*(max_length - name.length)}#{name.to_s}  #{env_names}"
+      end
+      exit
+    end
 
     if params.debug
       puts params
@@ -125,7 +138,8 @@ class DjAllCli
 
     # defaults
     unless params.application
-      params.application = 'greenhouse'
+      abort "ERROR: Default groups not found for application [#{params.application}]" if params.application.nil? || Settings::DJALL.groups[params.application].nil?
+      params.environments = environments_parser(Settings::DJALL.groups[params.application], params)
     end
 
      # validation and processing
@@ -154,8 +168,8 @@ class DjAllCli
       exit
     end
 
-    abort "ERROR: You must specify a valid dajoku application" unless valid_application?(params[:application])
-    abort "ERROR: Procedure requires a variable name" if params[:variable_name].nil?
+    abort "ERROR: You must specify a valid dajoku application (-a)" unless valid_application?(params[:application])
+    abort "ERROR: Procedure requires a variable name (-v)" if params[:variable_name].nil?
 
     DjAll::Controller.new_from_params(params[:application], params[:environments]).show_vars(
       params[:variable_name],
