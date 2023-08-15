@@ -12,7 +12,7 @@ module Dajoku
     end
 
     def self.call(env, options = {})
-      new(env).fetch_yaml(options)
+      new(env).fetch_yaml(**options)
     end
 
     def fetch_yaml(force_fetch: false, delete_file: false, ttl: Settings::DJALL.yaml.ttl)
