@@ -64,9 +64,9 @@ and
 ```
 dj-all -a greenhouse -s dev -r use1 -e uat:uat-s2 -v DATADOG*
 ```
-will compare the SOLR configuration for the UAT silos in dev:use1
+will compare the DATADOG configuration for the UAT silos in dev:use1
 
-![Screenshot of output for dj-all -a greenhouse -s dev -r use1 -e uat:uat-s2 -v DATADOG* -p](assets/example_solr_uats.png)
+![Screenshot of output for dj-all -a greenhouse -s dev -r use1 -e uat:uat-s2 -v DATADOG* -p](assets/example_datadog_uats.png)
 
 
 You can also now get a list of groups and their constituent environments by
@@ -96,8 +96,8 @@ non_prod_us_base  sandbox, staging, staging-base, staging-s2
 #### Configuration
 A configuration yaml file lives in `lib/settings/dj-all.yml`.  You can override any setting in there (or add to the available environemnt groups by application) by creating a yaml file at `~/.dj-all.yml` and overriding (or adding) the keys you need.
 
-If you want your yaml file in a different location, that works too if you set and environment variable pointing to the location of your configuration
-`export DJALL_CONFIG_FILE=<full path to your config file>`.  WARNING: we don't do any error checking on the config file, so this is a great way to break things, if that is your inclination.
+If you want your yaml file in a different location, that works too if you set an environment variable pointing to the location of your configuration
+`export DJALL_CONFIG_FILE=<full path to your config file>`.  LPT: we don't do any error checking on the config file, so this is a great way to break things, if that is your inclination.
 
 Another environment variable you can set is `DJ_ALL_SECRET_PASSWORD` (yes, that's a different convention.  So sue me).  If you set this to the value of the password that tells dajoku to unencrypt the secrets, this will give you the plain text values of any secrets you pull
 
