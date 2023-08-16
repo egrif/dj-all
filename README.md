@@ -64,10 +64,9 @@ and
 ```
 dj-all -a greenhouse -s dev -r use1 -e uat:uat-s2 -v DATADOG*
 ```
-![Screenshot of output for dj-all -a greenhouse -s dev -r use1 -e uat:uat-s2 -v DATADOG* -p](assets/example_solr_uats.png)
-
-
 will compare the SOLR configuration for the UAT silos in dev:use1
+
+![Screenshot of output for dj-all -a greenhouse -s dev -r use1 -e uat:uat-s2 -v DATADOG* -p](assets/example_solr_uats.png)
 
 
 You can also now get a list of groups and their constituent environments by
