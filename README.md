@@ -54,14 +54,36 @@ Usage: dj_all -a DAJOKU_APPLICATION_NAME -e SPACE,NAME,REGION:SPACE,NAME,REGION:
 ```
 Like so:
 ```
-dj-all -a greenhouse -s prod -r use1 -e prod:prod-base:canary -v *SOLR*
+dj-all -a greenhouse -g us -v DATADOG_RUM* -p
 ```
+Will list all configs (and secrets, though they will be obscured without the -x option) like this
+
+![Screenshot of output for dj-all -a greenhouse -g us -v DATADOG_RUM* -p](assets/example_datadog_rum_us.png)
+
 You can also now get a list of groups and their constituent environments by
 ```
 dj_all groups -a APPLICATION_NAME
 ```
+
 this will show you the currently active group definitions (which will be coming from the application defaults OR your overrides if any
-)
+) like this
+
+```
+Defined Groups:
+
+             all  prod, prod-s101, prod-s2, prod-s3, prod-s4, prod-s5, prod-s6, prod-s7
+              us  prod, prod-s2, prod-s3, prod-s4, prod-s5, prod-s6, prod-s7
+         us_base  prod, prod-base, prod-s2, prod-s3, prod-s4, prod-s5, prod-s6, prod-s7
+              eu  prod-s101
+          eu_all  prod-s101, staging-s101
+          legacy  prod, prod-s2
+         leaders  prod, prod-s101
+      staging_us  staging, staging-s2
+     staging_all  staging, staging-s101, staging-s2
+ staging_us_base  staging, staging-base, staging-s2
+     non_prod_us  sandbox, staging, staging-s2
+non_prod_us_base  sandbox, staging, staging-base, staging-s2
+```
 #### Configuration
 A configuration yaml file lives in `lib/settings/dj-all.yml`.  You can override any setting in there (or add to the available environemnt groups by application) by creating a yaml file at `~/.dj-all.yml` and overriding (or adding) the keys you need.
 
@@ -71,6 +93,6 @@ If you want your yaml file in a different location, that works too if you set an
 Another environment variable you can set is `DJ_ALL_SECRET_PASSWORD` (yes, that's a different convention.  So sue me).  If you set this to the value of the password that tells dajoku to unencrypt the secrets, this will give you the plain text values of any secrets you pull
 
 ## DST
-OMG, I just realized that if you are running this between 1 am and 2 am (second time) on the morning the clock gets set back for DST, you might have a problem getting the yaml data to refresh, since the expiration strategy will be confuzzled by the time change.  Don't worry, though, when you finally reach 2:00:01 am, everything should start working fine.  (Also, I _think_ that using the `-f` flag should force a refresh even in that situation).
+OMG, I just realized that if you are running this (for the second time) between 1 am and 2 am on the morning the clock gets set back for DST, you might have a problem getting the yaml data to refresh, since the expiration strategy will be confuzzled by the time change.  Don't worry, though, when you finally reach 2:00:01 am, everything should start working fine.  (Also, I _think_ that using the `-f` flag should force a refresh even in that situation).
 
 We, here at DjAll-central, strongly recommend that the best way to avoid this problem is by not using this tool (nor any other, honestly) between 1 and 2 am on mornings that the time is likely to change.
