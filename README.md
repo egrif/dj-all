@@ -54,11 +54,11 @@ Usage: dj_all -a DAJOKU_APPLICATION_NAME -e SPACE,NAME,REGION:SPACE,NAME,REGION:
 ```
 Like so:
 ```
-dj-all -a greenhouse -g us -v DATADOG_RUM* -p
+dj-all -a greenhouse -g us -v SOLR*
 ```
 Will list all configs (and secrets, though they will be obscured without the -x option) like this
 
-![Screenshot of output for dj-all -a greenhouse -g us -v DATADOG_RUM* -p](assets/example_datadog_rum_us.png)
+![Screenshot of output for dj-all -a greenhouse -g us -v SOLR* -p](assets/example_solr_us.png)
 
 You can also now get a list of groups and their constituent environments by
 ```
