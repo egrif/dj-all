@@ -35,6 +35,8 @@ module Dajoku
         Dajoku::Variable.new(entry['name'], entry, self)
       end
       return rets || []
+    rescue
+      return []
     end
 
     def configs
@@ -42,24 +44,32 @@ module Dajoku
         Dajoku::Variable.new(entry['name'], entry, self)
       end
       return figs || []
+    rescue
+      return []
     end
 
     def annotations
       yaml["annotations"].map do |entry|
         Dajoku::Annotation.new(entry['key'], entry['value'])
       end
+    rescue
+      return []
     end
 
     def components
       yaml["component_settings"].map do |entry|
         Dajoku::Component.new(entry['key'], entry['value'])
       end
+    rescue
+      return []
     end
 
     def domains
       yaml["domains"].map do |entry|
         Dajoku::Domain.new(entry['key'], entry['value'])
       end
+    rescue
+      return []
     end
   end
 end
